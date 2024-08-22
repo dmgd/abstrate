@@ -18,6 +18,7 @@ http4k-contract = { module = "org.http4k:http4k-contract", version.ref = "http4k
 http4k-jackson = { module = "org.http4k:http4k-format-jackson", version.ref = "http4k" }
 http4k-undertow = { module = "org.http4k:http4k-server-undertow", version.ref = "http4k" }
 http4k-okhttp = { module = "org.http4k:http4k-client-okhttp", version.ref = "http4k" }
+jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
 jackson-jsr310 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310", version.ref = "jackson" }
 jackson-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jackson" }
 jgit = { module = "org.eclipse.jgit:org.eclipse.jgit", version.ref = "jgit" }
