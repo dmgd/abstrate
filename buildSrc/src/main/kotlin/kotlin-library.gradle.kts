@@ -1,5 +1,5 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
 import java.util.Base64
 
 plugins {
@@ -13,15 +13,18 @@ group = "dev.abstrate"
 
 tasks.withType<Test> {
     useJUnitPlatform()
+    maxParallelForks = Runtime.getRuntime().availableProcessors()
+    testLogging {
+        events(TestLogEvent.FAILED, TestLogEvent.STANDARD_OUT, TestLogEvent.STANDARD_ERROR)
+        exceptionFormat = TestExceptionFormat.FULL
+    }
+    reports {
+        html.required = true
+        junitXml.required = false
+    }
 }
 
 kotlin.jvmToolchain(libs.findVersion("jdk").get().requiredVersion.toInt())
-
-tasks.named("compileKotlin", KotlinJvmCompile::class.java) {
-    compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_1_8)
-    }
-}
 
 repositories {
     mavenCentral()
@@ -46,8 +49,8 @@ publishing {
             from(components["java"])
             pom {
                 name = project.name
-                description = "Bootstrap for services using jackson for json de/serialisation, providing a default object mapper that works nicely out of the box"
-                url = "https://github.com/dmgd/jackson-for-kotlin"
+                description = "Libraries for building stuff"
+                url = "https://github.com/dmgd/abstrate"
                 licenses {
                     license {
                         name = "The Apache License, Version 2.0"
@@ -61,9 +64,9 @@ publishing {
                     }
                 }
                 scm {
-                    connection = "scm:git:git@github.com:dmgd/jackson-for-kotlin.git"
-                    developerConnection = "scm:git:git@github.com:dmgd/jackson-for-kotlin.git"
-                    url = "https://github.com/dmgd/jackson-for-kotlin"
+                    connection = "scm:git:git@github.com:dmgd/abstrate.git"
+                    developerConnection = "scm:git:git@github.com:dmgd/abstrate.git"
+                    url = "https://github.com/dmgd/abstrate"
                 }
             }
         }
@@ -101,21 +104,22 @@ tasks.named("distZip") {
     dependsOn("publishLibPublicationToMavenRepository")
 }
 
-tasks.register<Exec>("publishToMavenCentral") {
-    onlyIf {
-        isReleaseVersion
+if (isReleaseVersion) {
+    tasks.register<Exec>("publishToMavenCentral") {
+        dependsOn(tasks.distZip)
+        val credentials = System.getenv("MAVEN_CENTRAL_CREDENTIALS")
+        val token = Base64.getEncoder().encodeToString(credentials.toByteArray())
+        commandLine(
+            "curl",
+            "--request",
+            "POST",
+            "--header",
+            "Authorization: Bearer $token",
+            "--form",
+            "bundle=@build/distributions/${project.name}-${project.version}.zip",
+            "https://central.sonatype.com/api/v1/publisher/upload",
+        )
     }
-    dependsOn(tasks.distZip)
-    val credentials = "${System.getenv("MAVEN_CENTRAL_USERNAME")}:${System.getenv("MAVEN_CENTRAL_PASSWORD")}"
-    val token = Base64.getEncoder().encodeToString(credentials.toByteArray())
-    commandLine(
-        "curl",
-        "--request",
-        "POST",
-        "--header",
-        "Authorization: Bearer $token",
-        "--form",
-        "bundle=@build/distributions/${project.name}-${project.version}.zip",
-        "https://central.sonatype.com/api/v1/publisher/upload",
-    )
+} else {
+    tasks.register("publishToMavenCentral") {}
 }
