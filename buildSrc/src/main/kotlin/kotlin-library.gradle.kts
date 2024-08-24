@@ -121,5 +121,7 @@ if (isReleaseVersion) {
         )
     }
 } else {
-    tasks.register("publishToMavenCentral") {}
+    tasks.register("publishToMavenCentral") {
+        dependsOn(tasks.distZip)
+    }
 }
