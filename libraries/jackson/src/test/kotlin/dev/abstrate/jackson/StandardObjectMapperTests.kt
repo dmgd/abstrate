@@ -1,6 +1,6 @@
 @file:Suppress("ConvertObjectToDataObject")
 
-package dev.abstrate.json
+package dev.abstrate.jackson
 
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals

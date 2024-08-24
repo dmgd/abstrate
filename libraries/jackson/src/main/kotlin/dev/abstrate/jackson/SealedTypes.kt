@@ -1,4 +1,4 @@
-package uk.co.abstrate.json
+package dev.abstrate.jackson
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.databind.JavaType

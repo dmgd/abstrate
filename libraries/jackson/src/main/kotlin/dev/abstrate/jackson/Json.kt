@@ -1,4 +1,4 @@
-package dev.abstrate.json
+package dev.abstrate.jackson
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL
 import com.fasterxml.jackson.annotation.JsonTypeInfo
@@ -10,7 +10,6 @@ import com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMEST
 import com.fasterxml.jackson.databind.SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
-import uk.co.abstrate.json.SealedTypes
 
 fun standardObjectMapper(
     configureKotlin: KotlinModule.Builder.() -> Unit = {},
