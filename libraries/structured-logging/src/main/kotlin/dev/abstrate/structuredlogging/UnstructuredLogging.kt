@@ -42,7 +42,22 @@ enum class LogLevel {
     Trace, Debug, Info, Warning, Error, None
 }
 
-data class UnstructuredLog(val logger: String, val level: Level, val message: String, val throwable: Throwable?, val mdc: Map<String, String>, val marker: Marker?, val bufferedAt: Instant? = null) : Event
+data class UnstructuredLog(
+    val logger: String,
+    val level: Level,
+    val message: String,
+    val throwable: Throwable?,
+    /**
+     * The log event's mapped diagnostic context (e.g. see [logback's docs](https://logback.qos.ch/manual/mdc.html)).
+     *
+     * Should be `null` or non-empty, to keep pointless `,mdc:{}` out of default json serialised form.
+     * Some json serialisers may default to `,mdc:null` but it's reasonable to default to excluding keys with null values when the schema is known.
+     * (It's _not_ reasonable to exclude empty maps except on a field by field basis, and that requires per-serialiser configuration which we're not going to do here.)
+     */
+    val mdc: Map<String, String>?,
+    val marker: Marker?,
+    val bufferedAt: Instant? = null,
+) : Event
 
 internal class UnstructuredLoggingConfiguration(
     val record: (UnstructuredLog) -> Unit,
@@ -135,7 +150,7 @@ private fun unstructuredLog(logger: String, mdcAdapter: MDCAdapter, level: Level
         level,
         arrayFormat(messagePattern, arguments, null).message,
         throwable,
-        mdcAdapter.copyOfContextMap.orEmpty(),
+        mdcAdapter.copyOfContextMap?.takeIf { it.isNotEmpty() },
         marker
     )
 

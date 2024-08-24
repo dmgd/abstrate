@@ -19,6 +19,7 @@ class UnstructuredLoggingKtTests {
 
     private val logs = mutableListOf<UnstructuredLog>()
 
+    @Suppress("SameParameterValue")
     private fun recordUnstructuredLogs(defaultLogLevel: LogLevel, logLevels: Map<String, LogLevel> = emptyMap()) {
         recordUnstructuredLogsTo(defaultLogLevel, logLevels) {
             logs += it
@@ -32,8 +33,8 @@ class UnstructuredLoggingKtTests {
         resetUnstructuredLoggingForTesting()
     }
 
-    private fun unstructuredLog(logger: String, level: Level, message: String, throwable: Throwable? = null, mdc: Map<String, String> = emptyMap(), marker: Marker? = null, bufferedAt: Instant? = null) =
-        UnstructuredLog(logger = logger, level = level, message = message, throwable = throwable, mdc = mdc, marker = marker, bufferedAt = bufferedAt)
+    private fun unstructuredLog(logger: String, level: Level, message: String, throwable: Throwable? = null, mdc: Map<String, String>? = null, marker: Marker? = null, bufferedAt: Instant? = null) =
+        UnstructuredLog(logger = logger, level = level, message = message, throwable = throwable, mdc = mdc?.takeIf { it.isNotEmpty() }, marker = marker, bufferedAt = bufferedAt)
 
     @Test
     fun `logger names form a dot-separated hierarchy`() {
