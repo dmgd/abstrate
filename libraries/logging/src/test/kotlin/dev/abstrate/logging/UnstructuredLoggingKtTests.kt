@@ -1,8 +1,8 @@
-package dev.abstrate.structuredlogging
+package dev.abstrate.logging
 
-import dev.abstrate.structuredlogging.LogLevel.Error
-import dev.abstrate.structuredlogging.LogLevel.Info
-import dev.abstrate.structuredlogging.LogLevel.Trace
+import dev.abstrate.logging.LogLevel.Error
+import dev.abstrate.logging.LogLevel.Info
+import dev.abstrate.logging.LogLevel.Trace
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach

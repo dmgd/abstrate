@@ -1,12 +1,12 @@
-package dev.abstrate.structuredlogging
+package dev.abstrate.logging
 
 import dev.abstrate.kotlin.drainTo
-import dev.abstrate.structuredlogging.LogLevel.Debug
-import dev.abstrate.structuredlogging.LogLevel.Error
-import dev.abstrate.structuredlogging.LogLevel.Info
-import dev.abstrate.structuredlogging.LogLevel.None
-import dev.abstrate.structuredlogging.LogLevel.Trace
-import dev.abstrate.structuredlogging.LogLevel.Warning
+import dev.abstrate.logging.LogLevel.Debug
+import dev.abstrate.logging.LogLevel.Error
+import dev.abstrate.logging.LogLevel.Info
+import dev.abstrate.logging.LogLevel.None
+import dev.abstrate.logging.LogLevel.Trace
+import dev.abstrate.logging.LogLevel.Warning
 import org.slf4j.ILoggerFactory
 import org.slf4j.Marker
 import org.slf4j.bridge.SLF4JBridgeHandler
