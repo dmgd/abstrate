@@ -100,28 +100,28 @@ distributions {
     }
 }
 
-tasks.named("distZip") {
+tasks.distZip {
     dependsOn("publishLibPublicationToMavenRepository")
 }
 
-if (isReleaseVersion) {
-    tasks.register<Exec>("publishToMavenCentral") {
-        dependsOn(tasks.distZip)
-        val credentials = System.getenv("MAVEN_CENTRAL_CREDENTIALS")
-        val token = Base64.getEncoder().encodeToString(credentials.toByteArray())
-        commandLine(
-            "curl",
-            "--request",
-            "POST",
-            "--header",
-            "Authorization: Bearer $token",
-            "--form",
-            "bundle=@build/distributions/${project.name}-${project.version}.zip",
-            "https://central.sonatype.com/api/v1/publisher/upload?publishingType=AUTOMATIC",
-        )
-    }
-} else {
-    tasks.register("publishToMavenCentral") {
-        dependsOn(tasks.distZip)
-    }
+val publishToMavenCentral by tasks.registering(Exec::class) {
+    dependsOn(tasks.distZip)
+    val credentials = System.getenv("MAVEN_CENTRAL_CREDENTIALS")
+    val token = Base64.getEncoder().encodeToString(credentials.toByteArray())
+    commandLine(
+        "curl",
+        "--request",
+        "POST",
+        "--header",
+        "Authorization: Bearer $token",
+        "--form",
+        "bundle=@build/distributions/${project.name}-${project.version}.zip",
+        "https://central.sonatype.com/api/v1/publisher/upload?publishingType=AUTOMATIC",
+    )
+}
+
+val ciDependsOn = if (isReleaseVersion) publishToMavenCentral else tasks.distZip
+
+tasks.register("ci") {
+    dependsOn(ciDependsOn)
 }

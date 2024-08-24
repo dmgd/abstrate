@@ -26,7 +26,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
       - timeout-minutes: 5
-        run: ./gradlew publishToMavenCentral
+        run: ./gradlew ci
         env:
           MAVEN_CENTRAL_CREDENTIALS: ${{ secrets.MAVEN_CENTRAL_CREDENTIALS }}
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
