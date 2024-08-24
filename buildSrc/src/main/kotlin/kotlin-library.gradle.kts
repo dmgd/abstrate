@@ -117,7 +117,7 @@ if (isReleaseVersion) {
             "Authorization: Bearer $token",
             "--form",
             "bundle=@build/distributions/${project.name}-${project.version}.zip",
-            "https://central.sonatype.com/api/v1/publisher/upload",
+            "https://central.sonatype.com/api/v1/publisher/upload?publishingType=AUTOMATIC",
         )
     }
 } else {
