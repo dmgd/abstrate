@@ -110,6 +110,9 @@ val publishToMavenCentral by tasks.registering(Exec::class) {
     val token = Base64.getEncoder().encodeToString(credentials.toByteArray())
     commandLine(
         "curl",
+        "--fail",
+        "--silent",
+        "--show-error",
         "--request",
         "POST",
         "--header",
