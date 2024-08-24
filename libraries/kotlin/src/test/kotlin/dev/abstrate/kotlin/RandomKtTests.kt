@@ -7,7 +7,7 @@ import java.time.Duration.ofHours
 import java.time.Instant.EPOCH
 import java.util.Random
 
-class RandomTests {
+class RandomKtTests {
 
     @Test
     fun `can't take next from empty collection`() {
