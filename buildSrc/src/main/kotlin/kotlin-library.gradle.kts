@@ -3,7 +3,7 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 import java.util.Base64
 
 plugins {
-    id("org.jetbrains.kotlin.jvm")
+    kotlin("jvm")
     `maven-publish`
     signing
     distribution
@@ -24,14 +24,14 @@ tasks.withType<Test> {
     }
 }
 
-kotlin.jvmToolchain(libs.findVersion("jdk").get().requiredVersion.toInt())
+kotlin.jvmToolchain(libs.versions.jdk.get().toInt())
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    testImplementation(libs.findLibrary("junit-engine").get())
+    testImplementation(libs.junit.engine)
 }
 
 val version = rootProject.file("version").readText().trim()

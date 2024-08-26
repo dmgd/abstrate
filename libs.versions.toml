@@ -5,7 +5,6 @@ kotlin = "2.0.20"
 forkhandles = "2.20.0.0"
 http4k = "5.28.0.0"
 jackson = "2.17.2"
-jgit = "6.10.0.202406032230-r"
 junit = "5.11.0"
 slf4j = "2.0.16"
 
@@ -13,7 +12,6 @@ jib = "3.4.3"
 
 [libraries]
 forkhandles-result4k = { module = "dev.forkhandles:result4k", version.ref = "forkhandles" }
-forkhandles-time4k = { module = "dev.forkhandles:time4k", version.ref = "forkhandles" }
 http4k-contract = { module = "org.http4k:http4k-contract", version.ref = "http4k" }
 http4k-jackson = { module = "org.http4k:http4k-format-jackson", version.ref = "http4k" }
 http4k-undertow = { module = "org.http4k:http4k-server-undertow", version.ref = "http4k" }
@@ -21,14 +19,10 @@ http4k-okhttp = { module = "org.http4k:http4k-client-okhttp", version.ref = "htt
 jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
 jackson-jsr310 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310", version.ref = "jackson" }
 jackson-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jackson" }
-jgit = { module = "org.eclipse.jgit:org.eclipse.jgit", version.ref = "jgit" }
 junit-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
-kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
-kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
 slf4j-jcl = { module = "org.slf4j:jcl-over-slf4j", version.ref = "slf4j" }
 slf4j-jul = { module = "org.slf4j:jul-to-slf4j", version.ref = "slf4j" }
 slf4j-log4j = { module = "org.slf4j:log4j-over-slf4j", version.ref = "slf4j" }
-slf4j-nop = { module = "org.slf4j:slf4j-nop", version.ref = "slf4j" }
 
 [plugins]
 jib = { id = "com.google.cloud.tools.jib", version.ref = "jib" }
