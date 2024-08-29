@@ -9,9 +9,11 @@ import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.math.BigInteger
-import java.time.Duration
+import java.time.Duration as JavaDuration
 import java.time.Instant
 import java.util.UUID
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.Duration as KotlinDuration
 
 val aStandardObjectMapper = standardObjectMapper()
 
@@ -35,7 +37,8 @@ class StandardObjectMapperTests {
         roundTrip(setOf(1, 2, 3), "[1,2,3]")
         roundTrip(mapOf("a" to 1, "b" to true, "c" to listOf(1, 2, 3)), "{\"a\":1,\"b\":true,\"c\":[1,2,3]}")
         roundTrip(Instant.ofEpochMilli(7), "\"1970-01-01T00:00:00.007Z\"")
-        roundTrip(Duration.ofSeconds(7), "\"PT7S\"")
+        roundTrip(JavaDuration.ofSeconds(7), "\"PT7S\"")
+        roundTrip(7.seconds, "\"PT7S\"")
     }
 
     @Test
@@ -54,9 +57,10 @@ class StandardObjectMapperTests {
         roundTrip(ExampleUuid(UUID(1, 7)), "\"00000000-0000-0001-0000-000000000007\"")
         roundTrip(ExampleList(listOf(1, 2, 3)), "[1,2,3]")
         roundTrip(ExampleSet(setOf(1, 2, 3)), "[1,2,3]")
-        // doesn't work as of jackson 2.17.2: roundTrip(ExampleMap(mapOf("a" to 1, "b" to true, "c" to listOf(1, 2, 3))), "{\"a\":1,\"b\":true,\"c\":[1,2,3]}")
+        // doesn't work currently, in jackson 2.17.2: roundTrip(ExampleMap(mapOf("a" to 1, "b" to true, "c" to listOf(1, 2, 3))), "{\"a\":1,\"b\":true,\"c\":[1,2,3]}")
         roundTrip(ExampleInstant(Instant.ofEpochMilli(7)), "\"1970-01-01T00:00:00.007Z\"")
-        roundTrip(ExampleDuration(Duration.ofSeconds(7)), "\"PT7S\"")
+        roundTrip(ExampleJavaDuration(JavaDuration.ofSeconds(7)), "\"PT7S\"")
+        // doesn't work currently, in jackson 2.17.2: roundTrip(ExampleKotlinDuration(2.seconds), "\"PT7S\"")
     }
 
     @Test
@@ -162,7 +166,10 @@ class StandardObjectMapperTests {
     value class ExampleInstant(val value: Instant)
 
     @JvmInline
-    value class ExampleDuration(val value: Duration)
+    value class ExampleJavaDuration(val value: JavaDuration)
+
+    @JvmInline
+    value class ExampleKotlinDuration(val value: KotlinDuration)
 
     sealed interface ExampleSealedInterface {
         data object DataObject : ExampleSealedInterface

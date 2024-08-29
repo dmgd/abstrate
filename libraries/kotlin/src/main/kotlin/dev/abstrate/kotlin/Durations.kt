@@ -1,9 +1,22 @@
 package dev.abstrate.kotlin
 
-import java.time.Duration
+import java.time.Instant
+import kotlin.time.Duration
 
-operator fun Duration.times(multiplicand: Int): Duration =
-    multipliedBy(multiplicand.toLong())
+fun Duration.repeating() =
+    generateSequence(this) {
+        it
+    }
 
-operator fun Duration.times(multiplicand: Long): Duration =
-    multipliedBy(multiplicand)
+fun Duration.exponentialBackoff(multiplier: Int = 2) =
+    generateSequence(this) {
+        it * multiplier
+    }
+
+fun Sequence<Duration>.cappedAt(max: Duration) =
+    map {
+        it.cappedAt(max)
+    }
+
+operator fun Instant.plus(duration: Duration): Instant =
+    plusNanos(duration.inWholeNanoseconds)

@@ -3,29 +3,29 @@ package dev.abstrate.kotlin
 import dev.forkhandles.result4k.Failure
 import dev.forkhandles.result4k.Result
 import dev.forkhandles.result4k.Success
-import java.time.Duration
+import kotlin.time.Duration
 
 fun <T> retry(
     initial: T,
     attempt: () -> T,
     until: (T) -> Boolean,
-    intervals: Sequence<Duration>,
-    sleep: (Duration) -> Unit = { Thread.sleep(it.toMillis()) },
+    attemptDelays: Sequence<Duration>,
+    sleep: (Duration) -> Unit = { Thread.sleep(it.inWholeMilliseconds) },
 ): Result<T, TimedOut> {
     if (until(initial)) {
         return Success(initial)
     }
-    return retry(attempt, until, intervals, sleep)
+    return retry(attempt, until, attemptDelays, sleep)
 }
 
 fun <T> retry(
     attempt: () -> T,
     until: (T) -> Boolean,
-    intervals: Sequence<Duration>,
-    sleep: (Duration) -> Unit = { Thread.sleep(it.toMillis()) },
+    attemptDelays: Sequence<Duration>,
+    sleep: (Duration) -> Unit = { Thread.sleep(it.inWholeMilliseconds) },
 ): Result<T, TimedOut> {
-    for (interval in intervals) {
-        sleep(interval)
+    for (delay in attemptDelays) {
+        sleep(delay)
         val candidate = attempt()
         if (until(candidate)) {
             return Success(candidate)
@@ -33,5 +33,7 @@ fun <T> retry(
     }
     return Failure(TimedOut)
 }
+
+val immediately = sequenceOf(Duration.ZERO)
 
 data object TimedOut

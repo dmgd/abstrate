@@ -5,8 +5,8 @@ import dev.forkhandles.result4k.onFailure
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail
-import java.time.Duration
-import java.time.Duration.ofHours
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.hours
 
 class RetryKtTests {
 
@@ -17,7 +17,7 @@ class RetryKtTests {
                 initial = 1,
                 attempt = { fail("unexpected attempt") },
                 until = { it == 1 },
-                intervals = immediately,
+                attemptDelays = immediately,
                 sleep = { fail("unexpected sleep") }
             ).onFailure { fail("unexpected failure") }
         assertEquals(1, result)
@@ -31,7 +31,7 @@ class RetryKtTests {
                 initial = 1,
                 attempt = { 2 },
                 until = { it == 2 },
-                intervals = immediately,
+                attemptDelays = immediately,
                 sleep = { sleeps++ }
             ).onFailure { fail("unexpected failure") }
         assertEquals(2, result)
@@ -46,7 +46,7 @@ class RetryKtTests {
                 initial = 1,
                 attempt = { sleeps },
                 until = { it == 5 },
-                intervals = constantIntervals(ofHours(1)),
+                attemptDelays = 1.hours.repeating(),
                 sleep = { sleeps++ }
             ).onFailure { fail("unexpected failure") }
         assertEquals(5, result)
@@ -61,7 +61,7 @@ class RetryKtTests {
                 initial = 1,
                 attempt = { sleeps },
                 until = { it == 5 },
-                intervals = constantIntervals(ofHours(1)).take(3),
+                attemptDelays = 1.hours.repeating().take(3),
                 sleep = { sleeps++ }
             )
         assertEquals(Failure(TimedOut), result)
@@ -75,9 +75,9 @@ class RetryKtTests {
             initial = 1,
             attempt = { sleeps },
             until = { it == 5 },
-            intervals = exponentialIntervals(ofHours(2), multiplier = 5).take(3),
+            attemptDelays = 2.hours.exponentialBackoff(multiplier = 5).take(3),
             sleep = { sleeps += it }
         )
-        assertEquals(listOf(ofHours(2), ofHours(10), ofHours(50)), sleeps)
+        assertEquals(listOf(2.hours, 10.hours, 50.hours), sleeps)
     }
 }

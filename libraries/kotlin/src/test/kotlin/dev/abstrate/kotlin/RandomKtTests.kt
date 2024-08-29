@@ -3,9 +3,9 @@ package dev.abstrate.kotlin
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import java.time.Duration.ofHours
 import java.time.Instant.EPOCH
 import java.util.Random
+import kotlin.time.Duration.Companion.hours
 
 class RandomKtTests {
 
@@ -53,18 +53,18 @@ class RandomKtTests {
 
     @Test
     fun `next duration`() {
-        assertEquals(ofHours(1), Random().nextDuration(min = ofHours(1), max = ofHours(1)))
+        assertEquals(1.hours, Random().nextDuration(min = 1.hours, max = 1.hours))
     }
 
     @Test
     fun durations() {
         assertEquals(
             listOf(
-                ofHours(1),
-                ofHours(1),
-                ofHours(1),
+                1.hours,
+                1.hours,
+                1.hours,
             ),
-            Random().durations(min = ofHours(1), max = ofHours(1))
+            Random().durations(min = 1.hours, max = 1.hours)
                 .take(3)
                 .toList()
         )
@@ -74,11 +74,11 @@ class RandomKtTests {
     fun timeline() {
         assertEquals(
             listOf(
-                EPOCH + ofHours(1),
-                EPOCH + ofHours(2),
-                EPOCH + ofHours(3),
+                EPOCH + 1.hours,
+                EPOCH + 2.hours,
+                EPOCH + 3.hours,
             ),
-            Random().timeline(earliestStart = EPOCH, minStep = ofHours(1), maxStep = ofHours(1))
+            Random().timeline(earliestStart = EPOCH, minStep = 1.hours, maxStep = 1.hours)
                 .take(3)
                 .toList()
         )

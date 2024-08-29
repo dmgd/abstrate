@@ -1,9 +1,11 @@
 package dev.abstrate.kotlin
 
-import java.time.Duration
 import java.time.Instant
 import java.util.EnumSet
 import java.util.random.RandomGenerator
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.nanoseconds
 
 fun <T> RandomGenerator.nextFrom(collection: Collection<T>): T =
     if (collection.isEmpty()) {
@@ -56,40 +58,26 @@ fun RandomGenerator.strings(
 }
 
 fun RandomGenerator.nextDuration(
-    min: Duration = Duration.ofMillis(0),
-    max: Duration = Duration.ofDays(10),
+    min: Duration = Duration.ZERO,
+    max: Duration = 10.days,
 ): Duration {
-    val (minNanos, bound) = prepareNextDurationParameters(min, max)
-    return nextDuration(minNanos = minNanos, bound = bound)
+    require(min <= max) { "min ($min) must be <= max ($max)" }
+    return nextLong(min.inWholeNanoseconds, max.inWholeNanoseconds + 1).nanoseconds
 }
 
 fun RandomGenerator.durations(
-    min: Duration = Duration.ofMillis(0),
-    max: Duration = Duration.ofDays(10),
-): Sequence<Duration> {
-    val (minNanos, bound) = prepareNextDurationParameters(min, max)
-    return generateSequence {
-        nextDuration(minNanos = minNanos, bound = bound)
+    min: Duration = Duration.ZERO,
+    max: Duration = 10.days,
+) =
+    generateSequence {
+        nextDuration(min = min, max = max)
     }
-}
-
-private fun prepareNextDurationParameters(min: Duration, max: Duration): Pair<Long, Long> {
-    val minNanos = min.toNanos()
-    val maxNanos = max.toNanos()
-    require(0 <= minNanos) { "0 must be <= min ($min)" }
-    require(minNanos <= maxNanos) { "min ($min) must be <= max ($max)" }
-    val bound = maxNanos - minNanos + 1
-    return Pair(minNanos, bound)
-}
-
-private fun RandomGenerator.nextDuration(minNanos: Long, bound: Long) =
-    Duration.ofNanos(minNanos + nextLong(bound))
 
 fun RandomGenerator.timeline(
     earliestStart: Instant = Instant.EPOCH,
-    minStep: Duration = Duration.ofMillis(0),
-    maxStep: Duration = Duration.ofDays(10),
+    minStep: Duration,
+    maxStep: Duration,
 ): Sequence<Instant> =
     durations(minStep, maxStep)
-        .runningFold(earliestStart, Instant::plus)
+        .runningFold(earliestStart) { acc, next -> acc.plusNanos(next.inWholeNanoseconds) }
         .drop(1)

@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS
 import com.fasterxml.jackson.databind.SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.KotlinFeature.UseJavaDurationConversion
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 
 fun standardObjectMapper(
@@ -20,6 +21,7 @@ fun standardObjectMapper(
         .apply {
             registerModule(
                 KotlinModule.Builder()
+                    .enable(UseJavaDurationConversion)
                     .apply(configureKotlin)
                     .build()
             )
