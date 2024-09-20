@@ -5,7 +5,8 @@ import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.api.plugins.ExtensionAware
 import org.gradle.kotlin.dsl.PluginDependenciesSpecScope
 import org.gradle.kotlin.dsl.getByType
+import org.gradle.kotlin.dsl.the
 
 internal val Project.libs
     get() =
-        rootProject.extensions.getByName("libs") as LibrariesForLibs
+        rootProject.the<LibrariesForLibs>()

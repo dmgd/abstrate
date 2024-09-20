@@ -34,9 +34,9 @@ dependencies {
     testImplementation(libs.junit.engine)
 }
 
-val version = rootProject.file("version").readText().trim()
-project.version = version
-val isReleaseVersion = !version.endsWith("-SNAPSHOT")
+val projectVersion = rootProject.file("version").readText().trim()
+project.version = projectVersion
+val isReleaseVersion = !projectVersion.endsWith("-SNAPSHOT")
 
 java {
     withJavadocJar()
