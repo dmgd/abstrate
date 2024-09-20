@@ -1,3 +1,3 @@
 dependencies {
-    implementation(libs.forkhandles.result4k)
+    api(libs.forkhandles.result4k)
 }
