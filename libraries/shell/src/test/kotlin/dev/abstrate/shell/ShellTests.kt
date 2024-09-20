@@ -1,5 +1,6 @@
 package dev.abstrate.shell
 
+import dev.forkhandles.result4k.orThrow
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -14,7 +15,7 @@ interface ShellContract {
     fun `a successful command execution returns standard output`() {
         assertEquals(
             "1\n2\n3\n4\n",
-            shell.execute(listOf("bash", "-c", "for i in {1..4}; do echo \$i; done")),
+            shell.execute(listOf("bash", "-c", "for i in {1..4}; do echo \$i; done")).orThrow(),
         )
     }
 
@@ -23,6 +24,7 @@ interface ShellContract {
         val failure =
             assertThrows<ShellExecutionFailed> {
                 shell.execute(listOf("bash", "-c", "( echo \"This is stdout\"; echo \"This is stderr\" >&2; exit 42 )"))
+                    .orThrow()
             }
         // can't compare commands, since we might have wrapped them
         assertEquals(

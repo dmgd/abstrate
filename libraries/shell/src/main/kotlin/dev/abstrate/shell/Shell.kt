@@ -1,8 +1,12 @@
 package dev.abstrate.shell
 
+import dev.forkhandles.result4k.Failure
+import dev.forkhandles.result4k.Result
+import dev.forkhandles.result4k.Success
+
 interface Shell {
 
-    fun execute(command: List<String>): String
+    fun execute(command: List<String>): Result<String, ShellExecutionFailed>
     fun test(command: List<String>): Boolean
 }
 
@@ -17,24 +21,26 @@ data class ShellExecutionFailed(
     val exitCode: Int,
     val stdout: String,
     val stderr: String,
-) : Exception()
+) : RuntimeException()
 
 /**
  * A shell that executes each command as a new local process.
  */
 data object TransientLocalShell : Shell {
 
-    override fun execute(command: List<String>): String {
+    override fun execute(command: List<String>): Result<String, ShellExecutionFailed> {
         val process = start(command)
         if (process.waitFor() != 0) {
-            throw ShellExecutionFailed(
-                command = command,
-                exitCode = process.waitFor(),
-                stdout = process.inputReader().readText(),
-                stderr = process.errorReader().readText(),
+            return Failure(
+                ShellExecutionFailed(
+                    command = command,
+                    exitCode = process.waitFor(),
+                    stdout = process.inputReader().readText(),
+                    stderr = process.errorReader().readText(),
+                )
             )
         }
-        return process.inputReader().readText()
+        return Success(process.inputReader().readText())
     }
 
     override fun test(command: List<String>) =
